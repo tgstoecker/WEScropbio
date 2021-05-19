@@ -1,0 +1,33 @@
+from snakemake.utils import min_version
+
+min_version("6.3.0")
+
+
+configfile: "config/config.yaml"
+
+
+include: "rules/ref.smk"
+include: "rules/trimming.smk"
+include: "rules/mapping.smk"
+#include: "rules/candidate_calling.smk"
+
+SAMPLES = ["118711"]
+
+
+rule all:
+    input:
+        #genome
+        "resources/genome.fasta.fai",
+        "resources/genome.dict",
+        #known variants
+        "resources/variation.noiupac.vcf.gz",
+        #bwa index
+        multiext("resources/genome.fasta", ".amb", ".ann", ".bwt", ".pac", ".sa"),
+        # novoalign index
+        "resources/genome.novoalign.idx",
+        #cutadapt
+        #expand("results/trimmed/{sample}.R1.fastq.gz", sample=SAMPLES),
+        #expand("results/trimmed/{sample}.R2.fastq.gz", sample=SAMPLES),
+        expand("results/trimmed/{sample}.paired.qc.txt", sample=SAMPLES),
+        #BWA-mem mapping
+        expand("results/mapped/{sample}.bwa.sorted.bam", sample=SAMPLES),
