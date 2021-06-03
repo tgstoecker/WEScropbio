@@ -22,67 +22,67 @@ VARTYPES=["SNV", "INS", "DEL", "MNV", "BND", "INV", "DUP", "REP"]
 rule all:
     input:
         #genome
-        "resources/genome.fasta.fai",
-        "resources/genome.dict",
+#        "resources/genome.fasta.fai",
+#        "resources/genome.dict",
         #known variants
-        "resources/variation.noiupac.vcf.gz",
+#        "resources/variation.noiupac.vcf.gz",
         #bwa index
-        multiext("resources/genome.fasta", ".amb", ".ann", ".bwt", ".pac", ".sa"),
+#        multiext("resources/genome.fasta", ".amb", ".ann", ".bwt", ".pac", ".sa"),
         # novoalign index
-        "resources/genome.novoalign.idx",
+#        "resources/genome.novoalign.idx",
         #cutadapt
         #expand("results/trimmed/{sample}.R1.fastq.gz", sample=SAMPLES),
         #expand("results/trimmed/{sample}.R2.fastq.gz", sample=SAMPLES),
-        expand("results/trimmed/{sample}.paired.qc.txt", sample=SAMPLES),
+#        expand("results/trimmed/{sample}.paired.qc.txt", sample=SAMPLES),
         #BWA-mem mapping
-        expand("results/mapped/{sample}.bwa.sorted.bam", sample=SAMPLES),
+#        expand("results/mapped/{sample}.bwa.sorted.bam", sample=SAMPLES),
         #Novoalign mapping
-        expand("results/mapped/{sample}.novoalign.sam", sample=SAMPLES),
+#        expand("results/mapped/{sample}.novoalign.sam", sample=SAMPLES),
         #Novoalign sort & index
         #expand("results/mapped/{sample}.novoalign.sorted.bam.bai", sample=SAMPLES),
         #MarkDups
-        expand("results/dedup/{sample}.{aligner}.sorted.bam", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/qc/dedup/{sample}.{aligner}.metrics.txt", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/dedup/{sample}.{aligner}.sorted.bam.bai", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/dedup/{sample}.{aligner}.sorted.bam", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/qc/dedup/{sample}.{aligner}.metrics.txt", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/dedup/{sample}.{aligner}.sorted.bam.bai", sample=SAMPLES, aligner=ALIGNERS),
         #BQSR
-        expand("results/recal/{sample}.{aligner}.sorted.bam", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/recal/{sample}.{aligner}.sorted.bai", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/recal/{sample}.{aligner}.sorted.bam", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/recal/{sample}.{aligner}.sorted.bai", sample=SAMPLES, aligner=ALIGNERS),
         ##CandidateCalling
         #gatk haplotype caller + index
-        expand("results/candidate_calls/haplotypecaller/{sample}.{aligner}.vcf", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/haplotypecaller/{sample}.{aligner}.vcf", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
         #bcftools mpileup + bcftools call + index
-        expand("results/candidate_calls/mpileup/{sample}.{aligner}.pileup.bcf", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/mpileup/{sample}.{aligner}.pileup.bcf", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
         #deep variant + reheader + index
-        expand("results/candidate_calls/deep_variant/{sample}.{aligner}.vcf.gz", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf", sample=SAMPLES, aligner=ALIGNERS), 
-        expand("results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/deep_variant/{sample}.{aligner}.vcf.gz", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf", sample=SAMPLES, aligner=ALIGNERS), 
+#        expand("results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
         #freebayes + index
-        expand("results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
         #delly + index
-        expand("results/candidate_calls/delly/{sample}.{aligner}.delly.bcf", sample=SAMPLES, aligner=ALIGNERS),
-        expand("results/candidate_calls/delly/{sample}.{aligner}.delly.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/delly/{sample}.{aligner}.delly.bcf", sample=SAMPLES, aligner=ALIGNERS),
+#        expand("results/candidate_calls/delly/{sample}.{aligner}.delly.bcf.csi", sample=SAMPLES, aligner=ALIGNERS),
         ## candidates concat set
-        "results/candidates_concat/all_concat.bcf",
+#        "results/candidates_concat/all_concat.bcf",
         ## candidates norm set
-        "results/candidates_norm/all_norm.bcf",
+#        "results/candidates_norm/all_norm.bcf",
         ## varlociraptor preprocess
-        "results/recal/merged/merged_recal.bam",
-        "results/recal/merged/merged_recal.bam.bai",
-        "results/observations/observations.bcf",
+#        "results/recal/merged/merged_recal.bam",
+#        "results/recal/merged/merged_recal.bam.bai",
+#        "results/observations/observations.bcf",
         ## varlociraptor calling
-        "results/varlociraptor_calls/calls.bcf",
+#        "results/varlociraptor_calls/calls.bcf",
         ##varlociraptor filtering odds + fdr
-        "results/varlociraptor_filter/calls.filtered_odds.bcf",
-#        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled.bcf",
-        expand("results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_{vartype}.bcf", vartype=VARTYPES),
-        expand("results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_{vartype}.bcf.csi", vartype=VARTYPES),
-        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.bcf",
-        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.vcf",
+#        "results/varlociraptor_filter/calls.filtered_odds.bcf",
+##        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled.bcf",
+#        expand("results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_{vartype}.bcf", vartype=VARTYPES),
+#        expand("results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_{vartype}.bcf.csi", vartype=VARTYPES),
+#        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.bcf",
+#        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.vcf",
         "results/varlociraptor_filter/stoecker_schoof_bonn_NGS-CN_WES_benchmark_NA12878.vcf",
 
 
