@@ -13,4 +13,3 @@ rule cutadapt_pe:
     threads: 8
     wrapper:
         "0.74.0/bio/cutadapt/pe"
-

@@ -2,7 +2,7 @@
 
 rule map_reads_bwa:
     input:
-        reads=["results/trimmed/{sample}.R1.fastq.gz", "results/trimmed/{sample}.R2.fastq.gz"]
+        reads=["results/trimmed/{sample}.R1.fastq", "results/trimmed/{sample}.R2.fastq"]
     output:
         "results/mapped/{sample}.bwa.sorted.bam",
     log:
@@ -27,10 +27,57 @@ rule map_reads_bwa:
 
 ### Mapping with Novoalign
 
-#rule map_reads_novoalign:
-#novoalign -d "$Re1".nix -f Data/"$r1" Data/"$r2" -i 203,20 -o SAM
+rule map_reads_novoalign:
+    input:
+        reads=["results/trimmed/{sample}.R1.fastq", "results/trimmed/{sample}.R2.fastq"],
+        index="resources/genome.novoalign.idx"
+    output:
+        "results/mapped/{sample}.novoalign.sam"
+    conda:
+        "../envs/picard.yaml"
+    threads: 24
+    shell:
+        "novoalign -c {threads} -d {input.index} -f {input.reads} -i 203,20 -o SAM > {output}"
 
 # sam to sorted bam 
+rule novoalign_sam_sort_bam:
+    input:
+        "results/mapped/{sample}.novoalign.sam"
+    output:
+        temp("results/mapped/{sample}.novoalign.noreadgroup.sorted.bam"),
+    threads: 24
+    shell:
+        "samtools sort -@ {threads} -O BAM {input} -o {output}"
+
+
+rule novoalign_index_bam:
+    input:
+        "results/mapped/{sample}.novoalign.noreadgroup.sorted.bam"
+    output:
+        temp("results/mapped/{sample}.novoalign.noreadgroup.sorted.bam.bai")
+    threads: 24
+    shell:
+        "samtools index -@ {threads} {input}"
+
+
+rule novoalign_add_read_groups:
+    input:
+        "results/mapped/{sample}.novoalign.noreadgroup.sorted.bam"
+    output:
+        "results/mapped/{sample}.novoalign.sorted.bam"
+    conda:
+        "../envs/picard.yaml"
+    shell:
+        "picard AddOrReplaceReadGroups "
+        "I={input} "
+        "O={output} "
+        "RGID=1 "
+        "RGLB=lib1 "
+        "RGPL=illumina "
+        "RGPU=unit1 "
+        "RGSM={wildcards.sample}"
+
+
 
 
 ### Marking duplicates with Picard ###
@@ -38,17 +85,26 @@ rule map_reads_bwa:
 
 rule mark_duplicates:
     input:
-        "results/mapped/{sample}.sorted.bam",
+        "results/mapped/{sample}.{aligner}.sorted.bam",
     output:
-        bam=temp("results/dedup/{sample}.sorted.bam"),
-        metrics="results/qc/dedup/{sample}.metrics.txt",
+        bam="results/dedup/{sample}.{aligner}.sorted.bam",
+        metrics="results/qc/dedup/{sample}.{aligner}.metrics.txt",
     log:
-        "logs/picard/dedup/{sample}.log",
+        "logs/picard/dedup/{sample}.{aligner}.log",
     params:
         config["params"]["picard"]["MarkDuplicates"],
     wrapper:
         "0.59.2/bio/picard/markduplicates"
 
+
+rule mark_duplicates_indexes:
+    input:
+        "results/dedup/{sample}.{aligner}.sorted.bam"
+    output:
+        "results/dedup/{sample}.{aligner}.sorted.bam.bai"
+    threads: 24
+    shell:
+        "samtools index -@ {threads} {input}"
 
 
 ### Applying GATK Base Qulaity Recalibration ###
@@ -56,20 +112,20 @@ rule mark_duplicates:
 
 rule recalibrate_base_qualities:
     input:
-#        bam=get_recalibrate_quality_input,
-#        bai=lambda w: get_recalibrate_quality_input(w, bai=True),
+        bam="results/dedup/{sample}.{aligner}.sorted.bam",
+        bai="results/dedup/{sample}.{aligner}.sorted.bam.bai",
         ref="resources/genome.fasta",
         ref_dict="resources/genome.dict",
         ref_fai="resources/genome.fasta.fai",
         known="resources/variation.noiupac.vcf.gz",
         tbi="resources/variation.noiupac.vcf.gz.tbi",
     output:
-        recal_table=temp("results/recal/{sample}.grp"),
+        recal_table=temp("results/recal/{sample}.{aligner}.grp"),
     params:
         extra=config["params"]["gatk"]["BaseRecalibrator"],
         java_opts="",
     log:
-        "logs/gatk/baserecalibrator/{sample}.log",
+        "logs/gatk/baserecalibrator/{sample}.{aligner}.log",
     threads: 8
     wrapper:
         "0.62.0/bio/gatk/baserecalibratorspark"
@@ -80,17 +136,17 @@ rule recalibrate_base_qualities:
 
 rule apply_bqsr:
     input:
-#        bam=get_recalibrate_quality_input,
-#        bai=lambda w: get_recalibrate_quality_input(w, bai=True),
+        bam="results/dedup/{sample}.{aligner}.sorted.bam",
+        bai="results/dedup/{sample}.{aligner}.sorted.bam.bai",
         ref="resources/genome.fasta",
         ref_dict="resources/genome.dict",
         ref_fai="resources/genome.fasta.fai",
-        recal_table="results/recal/{sample}.grp",
+        recal_table="results/recal/{sample}.{aligner}.grp",
     output:
-        bam=protected("results/recal/{sample}.sorted.bam"),
-        bai="results/recal/{sample}.sorted.bai",
+        bam=protected("results/recal/{sample}.{aligner}.sorted.bam"),
+        bai="results/recal/{sample}.{aligner}.sorted.bai",
     log:
-        "logs/gatk/gatk_applybqsr/{sample}.log",
+        "logs/gatk/gatk_applybqsr/{sample}.{aligner}.log",
     params:
         extra=config["params"]["gatk"]["applyBQSR"],  # optional
         java_opts="",  # optional
