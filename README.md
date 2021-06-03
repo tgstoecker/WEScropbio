@@ -8,10 +8,9 @@ Results from all participants were compared to a gold standard set in Cologne wi
 A stripped down yet extended version of the [dna-seq-varlociraptor](https://github.com/snakemake-workflows/dna-seq-varlociraptor) pipeline by Johannes Köster's team from the university of Duisburg-Essen.  
 "Stripped down" in the sense that most annotation, report and multi-sample features were removed and all focus is put on the variant calling itself.  
 "Extended" since based on results of [Kumaran et al. 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2928-9) my approach was to integrate the results of more than one alignment software and a plethora of variant callers.  
-Alignment is performed by both bwa-mem and a Novoalign V3.09.04 (Licensed for evaluation, educational, and not-for-profit use only).  
-Both alignments are subsequently used for calling of candidate variants with GATK, samtools, freebayes, DeepVariant & Delly.  
+Alignment is performed by both bwa-mem and a Novoalign V3.09.04 (Licensed for evaluation, educational, and not-for-profit use only). Both alignments are subsequently used for calling of candidate variants with GATK, samtools, freebayes, DeepVariant & Delly.  
 Variants are then joined across all callers with bcftools concat/norm (not perfect since some information is lost in the process).  
-[Varlociraptor](https://github.com/varlociraptor/varlociraptor) is then used to produce a final call set and filter it.  
+I used [Varlociraptor](https://github.com/varlociraptor/varlociraptor) to produce a final call set and filter it.  
 
 It is important to note that normalization and integration of similar variant calling software is a matter of ongoing research and the quick & dirty solution here is unlikely to be optimal.  
 A comparison to highly optimized and established variant calling pipelines based on a single caller is nevertheless very interesting and motivated this entry into the WGGC comparison effort.
