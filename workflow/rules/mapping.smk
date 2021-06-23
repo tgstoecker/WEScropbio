@@ -2,7 +2,8 @@
 
 rule map_reads_bwa:
     input:
-        reads=["results/trimmed/{sample}.R1.fastq", "results/trimmed/{sample}.R2.fastq"]
+        reads=["results/trimmed/{sample}.R1.fastq", "results/trimmed/{sample}.R2.fastq"],
+        index=multiext("resources/genome.fasta", ".amb", ".ann", ".bwt", ".pac", ".sa"),
     output:
         "results/mapped/{sample}.bwa.sorted.bam",
     log:
@@ -34,7 +35,7 @@ rule map_reads_novoalign:
     output:
         "results/mapped/{sample}.novoalign.sam"
     conda:
-        "../envs/picard.yaml"
+        "../envs/novoalign.yaml"
     threads: 24
     shell:
         "novoalign -c {threads} -d {input.index} -f {input.reads} -i 203,20 -o SAM > {output}"
@@ -46,6 +47,7 @@ rule novoalign_sam_sort_bam:
     output:
         temp("results/mapped/{sample}.novoalign.noreadgroup.sorted.bam"),
     threads: 24
+    conda: "../envs/samtools.yaml"
     shell:
         "samtools sort -@ {threads} -O BAM {input} -o {output}"
 
