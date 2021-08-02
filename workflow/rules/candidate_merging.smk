@@ -4,17 +4,17 @@ ALIGNERS = ["bwa", "novoalign"]
 
 rule concat_all_candidate_callsets:
     input:
-        calls=expand(["results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf",
-                      "results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf",
+        calls=expand(["results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf",
+                      "results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf",
                       "results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf",
-                      "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf",
-                      "results/candidate_calls/delly/{sample}.{aligner}.delly.bcf"]
+                      "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf",
+                      "results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf"]
                      , sample=SAMPLES, aligner=ALIGNERS),
         index=expand(["results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf.csi",
-                     "results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf.csi",
-                     "results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf.csi",
-                     "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf.csi",
-                     "results/candidate_calls/delly/{sample}.{aligner}.delly.bcf.csi"]
+                     "results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf.csi",
+                     "results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf.csi",
+                     "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf.csi",
+                     "results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf.csi"]
                      , sample=SAMPLES, aligner=ALIGNERS),
     output:
         "results/candidates_concat/all_concat.bcf"

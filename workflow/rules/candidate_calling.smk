@@ -30,11 +30,28 @@ rule gatk_vcf_to_bcf:
         "bcftools view {input} -Ob > {output}"
 
 
+rule gatk_bcftools_reheader:
+    input:
+        vcf="results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf",
+        ## new header, can be omitted if "samples" is set
+        #header="header.txt",
+        ## file containing new sample names, can be omitted if "header" is set
+        samples="samples.tsv"
+    output:
+        "results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf"
+    params:
+        extra="",  # optional parameters for bcftools reheader
+        view_extra="-O b"  # add output format for internal bcftools view call
+    wrapper:
+        "0.74.0/bio/bcftools/reheader"
+
+
+
 rule index_gatk_haplotypecaller:
     input:
-        "results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf"
+        "results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf"
     output:
-        "results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf.csi"
+        "results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf.csi"
     params:
         extra=""  # optional parameters for bcftools index
     wrapper:
@@ -85,11 +102,28 @@ rule bcftools_call:
         "0.74.0/bio/bcftools/call"
 
 
+rule mpileup_bcftools_reheader:
+    input:
+        vcf="results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf",
+        ## new header, can be omitted if "samples" is set
+        #header="header.txt",
+        ## file containing new sample names, can be omitted if "header" is set
+        samples="samples.tsv"
+    output:
+        "results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf"
+    params:
+        extra="",  # optional parameters for bcftools reheader
+        view_extra="-O b"  # add output format for internal bcftools view call
+    wrapper:
+        "0.74.0/bio/bcftools/reheader"
+
+
+
 rule index_bcftools_call:
     input:
-        "results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf"
+        "results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf"
     output:
-        "results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf.csi"
+        "results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf.csi"
     params:
         extra=""  # optional parameters for bcftools index
     wrapper:
@@ -113,7 +147,7 @@ rule deep_variant_calling:
         "0.74.0/bio/deepvariant"
 
 
-rule deep_variant_bcftools_reheader:
+rule deepvariant_bcftools_reheader:
     input:
         vcf="results/candidate_calls/deep_variant/{sample}.{aligner}.vcf.gz",
         ## new header, can be omitted if "samples" is set
@@ -163,11 +197,27 @@ rule freebayes:
         "0.68.0/bio/freebayes"
 
 
+rule freebayes_bcftools_reheader:
+    input:
+        vcf="results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf",
+        ## new header, can be omitted if "samples" is set
+        #header="header.txt",
+        ## file containing new sample names, can be omitted if "header" is set
+        samples="samples.tsv"
+    output:
+        "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf"
+    params:
+        extra="",  # optional parameters for bcftools reheader
+        view_extra="-O b"  # add output format for internal bcftools view call
+    wrapper:
+        "0.74.0/bio/bcftools/reheader"
+
+
 rule index_freebayes:
     input:
-        "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf"
+        "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf"
     output:
-        "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf.csi"
+        "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf.csi"
     params:
         extra=""  # optional parameters for bcftools index
     wrapper:
@@ -192,11 +242,29 @@ rule delly:
         "0.68.0/bio/delly"
 
 
+rule delly_bcftools_reheader:
+    input:
+        vcf="results/candidate_calls/delly/{sample}.{aligner}.delly.bcf",
+        ## new header, can be omitted if "samples" is set
+        #header="header.txt",
+        ## file containing new sample names, can be omitted if "header" is set
+        samples="samples.tsv"
+    output:
+        "results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf"
+    params:
+        extra="",  # optional parameters for bcftools reheader
+        view_extra="-O b"  # add output format for internal bcftools view call
+    wrapper:
+        "0.74.0/bio/bcftools/reheader"
+
+
+
+
 rule index_delly:
     input:
-        "results/candidate_calls/delly/{sample}.{aligner}.delly.bcf"
+        "results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf"
     output:
-        "results/candidate_calls/delly/{sample}.{aligner}.delly.bcf.csi"
+        "results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf.csi"
     params:
         extra=""  # optional parameters for bcftools index
     wrapper:
