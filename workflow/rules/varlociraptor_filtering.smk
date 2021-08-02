@@ -50,7 +50,7 @@ rule bcftools_concat_final_calls:
     output:
         "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.bcf"
     params:
-        "-Ob --threads 24 -a -d none -R Agilent_v7.bed"  # optional parameters for bcftools concat (except -o)
+        "-Ob --threads 24 -a -d none -R targets/targets.bed"  # optional parameters for bcftools concat (except -o)
     wrapper:
         "0.74.0/bio/bcftools/concat"
 
