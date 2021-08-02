@@ -1,7 +1,3 @@
-SAMPLES = ["118711"]
-ALIGNERS = ["bwa", "novoalign"]
-
-
 rule concat_all_candidate_callsets:
     input:
         calls=expand(["results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf",

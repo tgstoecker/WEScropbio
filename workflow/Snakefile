@@ -6,6 +6,10 @@ min_version("6.3.0")
 configfile: "config/config.yaml"
 
 
+SAMPLES = ["118711"]
+ALIGNERS = ["bwa", "novoalign"]
+VARTYPES=["SNV", "INS", "DEL", "MNV", "BND", "INV", "DUP", "REP"]
+
 include: "rules/ref.smk"
 include: "rules/trimming.smk"
 include: "rules/mapping.smk"
@@ -15,9 +19,11 @@ include: "rules/candidate_norm.smk"
 include: "rules/varlociraptor_calling.smk"
 include: "rules/varlociraptor_filtering.smk"
 
-SAMPLES = ["118711"]
-ALIGNERS = ["bwa", "novoalign"]
-VARTYPES=["SNV", "INS", "DEL", "MNV", "BND", "INV", "DUP", "REP"]
+#SAMPLES = ["118711"]
+#ALIGNERS = ["bwa", "novoalign"]
+#SAMPLES = config["SAMPLES"]
+#ALIGNERS = config["ALIGNERS"]
+#VARTYPES=["SNV", "INS", "DEL", "MNV", "BND", "INV", "DUP", "REP"]
 
 rule all:
     input:
