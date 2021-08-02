@@ -11,7 +11,7 @@ rule map_reads_bwa:
     params:
         index="resources/genome.fasta",
         extra=r"-R '@RG\tID:{sample}\tSM:{sample}\tPL:ILLUMINA'",
-        sort="none",
+        sort="samtools",
         sort_order="coordinate",
         sort_extra="",
 #    conda:
@@ -28,8 +28,10 @@ rule map_reads_bwa:
 
 ### Mapping with Novoalign
 
+
 rule map_reads_novoalign:
     input:
+        license="config/licenses/novoalign.lic.check",
         reads=["results/trimmed/{sample}.R1.fastq", "results/trimmed/{sample}.R2.fastq"],
         index="resources/genome.novoalign.idx"
     output:
@@ -45,7 +47,7 @@ rule novoalign_sam_sort_bam:
     input:
         "results/mapped/{sample}.novoalign.sam"
     output:
-        temp("results/mapped/{sample}.novoalign.noreadgroup.sorted.bam"),
+        "results/mapped/{sample}.novoalign.noreadgroup.sorted.bam",
     threads: 24
     conda: "../envs/samtools.yaml"
     shell:
@@ -56,7 +58,7 @@ rule novoalign_index_bam:
     input:
         "results/mapped/{sample}.novoalign.noreadgroup.sorted.bam"
     output:
-        temp("results/mapped/{sample}.novoalign.noreadgroup.sorted.bam.bai")
+        "results/mapped/{sample}.novoalign.noreadgroup.sorted.bam.bai"
     threads: 24
     shell:
         "samtools index -@ {threads} {input}"
