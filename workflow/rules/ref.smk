@@ -38,15 +38,26 @@ rule genome_dict:
         "samtools dict {input} > {output} 2> {log} "
 
 ### Novoalign index
+rule register_novoalign_license:
+    input:
+        "config/licenses/novoalign.lic"
+    output:
+        touch("config/licenses/novoalign.lic.check")
+    conda:
+        "../envs/novoalign.yaml"
+    shell:
+        "novoalign-license-register {input}"
+
 rule novoalign_index:
     input:
-        "resources/genome.fasta",
+        license="config/licenses/novoalign.lic.check",
+        genome="resources/genome.fasta",
     output:
         "resources/genome.novoalign.idx"
     conda:
         "../envs/novoalign.yaml"
     shell:
-        "novoindex {output} {input}"
+        "novoindex {output} {input.genome}"
 
 ### Download pre-process known variants
 
