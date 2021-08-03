@@ -6,7 +6,7 @@ min_version("6.3.0")
 configfile: "config/config.yaml"
 
 
-SAMPLES = ["118711"]
+SAMPLES = ["NA12878_HG001_Twist_Bonn"]
 ALIGNERS = ["bwa", "novoalign"]
 VARTYPES=["SNV", "INS", "DEL", "MNV", "BND", "INV", "DUP", "REP"]
 
@@ -89,7 +89,7 @@ rule all:
 #        expand("results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_{vartype}.bcf.csi", vartype=VARTYPES),
 #        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.bcf",
 #        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.vcf",
-        "results/varlociraptor_filter/stoecker_schoof_bonn_NGS-CN_WES_benchmark_NA12878.vcf",
+        "results/varlociraptor_filter/norm_final.vcf",
 
 
 
