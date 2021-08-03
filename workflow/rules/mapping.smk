@@ -5,7 +5,7 @@ rule map_reads_bwa:
         reads=["results/trimmed/{sample}.R1.fastq", "results/trimmed/{sample}.R2.fastq"],
         index=multiext("resources/genome.fasta", ".amb", ".ann", ".bwt", ".pac", ".sa"),
     output:
-        "results/mapped/{sample}.bwa.sorted.bam",
+        temp("results/mapped/{sample}.bwa.sorted.bam"),
     log:
         "logs/bwa_mem/{sample}.log",
     params:
@@ -35,7 +35,7 @@ rule map_reads_novoalign:
         reads=["results/trimmed/{sample}.R1.fastq", "results/trimmed/{sample}.R2.fastq"],
         index="resources/genome.novoalign.idx"
     output:
-        "results/mapped/{sample}.novoalign.sam"
+        temp("results/mapped/{sample}.novoalign.sam")
     conda:
         "../envs/novoalign.yaml"
     threads: 24
@@ -47,7 +47,7 @@ rule novoalign_sam_sort_bam:
     input:
         "results/mapped/{sample}.novoalign.sam"
     output:
-        "results/mapped/{sample}.novoalign.noreadgroup.sorted.bam",
+        temp("results/mapped/{sample}.novoalign.noreadgroup.sorted.bam"),
     threads: 24
     conda: "../envs/samtools.yaml"
     shell:
@@ -58,7 +58,7 @@ rule novoalign_index_bam:
     input:
         "results/mapped/{sample}.novoalign.noreadgroup.sorted.bam"
     output:
-        "results/mapped/{sample}.novoalign.noreadgroup.sorted.bam.bai"
+        temp("results/mapped/{sample}.novoalign.noreadgroup.sorted.bam.bai")
     threads: 24
     shell:
         "samtools index -@ {threads} {input}"
@@ -68,7 +68,7 @@ rule novoalign_add_read_groups:
     input:
         "results/mapped/{sample}.novoalign.noreadgroup.sorted.bam"
     output:
-        "results/mapped/{sample}.novoalign.sorted.bam"
+        temp("results/mapped/{sample}.novoalign.sorted.bam")
     conda:
         "../envs/picard.yaml"
     shell:
@@ -91,7 +91,7 @@ rule mark_duplicates:
     input:
         "results/mapped/{sample}.{aligner}.sorted.bam",
     output:
-        bam="results/dedup/{sample}.{aligner}.sorted.bam",
+        bam=temp("results/dedup/{sample}.{aligner}.sorted.bam"),
         metrics="results/qc/dedup/{sample}.{aligner}.metrics.txt",
     log:
         "logs/picard/dedup/{sample}.{aligner}.log",
@@ -105,7 +105,7 @@ rule mark_duplicates_indexes:
     input:
         "results/dedup/{sample}.{aligner}.sorted.bam"
     output:
-        "results/dedup/{sample}.{aligner}.sorted.bam.bai"
+        temp("results/dedup/{sample}.{aligner}.sorted.bam.bai")
     threads: 24
     shell:
         "samtools index -@ {threads} {input}"

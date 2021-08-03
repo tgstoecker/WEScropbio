@@ -5,7 +5,7 @@ rule gatk_calling:
         ref="resources/genome.fasta",
 #        known="resources/variation.noiupac.vcf.gz"
     output:
-        vcf="results/candidate_calls/haplotypecaller/{sample}.{aligner}.vcf",
+        vcf=temp("results/candidate_calls/haplotypecaller/{sample}.{aligner}.vcf"),
     log:
         "logs/gatk/haplotypecaller/{sample}.{aligner}.log"
     params:
@@ -24,7 +24,7 @@ rule gatk_vcf_to_bcf:
     input:
         "results/candidate_calls/haplotypecaller/{sample}.{aligner}.vcf"
     output:
-        "results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf"
+        temp("results/candidate_calls/haplotypecaller/{sample}.{aligner}.bcf")
     conda: "../envs/bcftools.yaml"
     shell:
         "bcftools view {input} -Ob > {output}"
@@ -38,7 +38,7 @@ rule gatk_bcftools_reheader:
         ## file containing new sample names, can be omitted if "header" is set
         samples="samples.tsv"
     output:
-        "results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf"
+        temp("results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf")
     params:
         extra="",  # optional parameters for bcftools reheader
         view_extra="-O b"  # add output format for internal bcftools view call
@@ -51,7 +51,7 @@ rule index_gatk_haplotypecaller:
     input:
         "results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf"
     output:
-        "results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf.csi"
+        temp("results/candidate_calls/haplotypecaller/{sample}.{aligner}.reheader.bcf.csi")
     params:
         extra=""  # optional parameters for bcftools index
     wrapper:
@@ -79,7 +79,7 @@ rule bcftools_mpileup:
         ref="resources/genome.fasta", # this can be left out if --no-reference is in options
         alignments="results/recal/{sample}.{aligner}.sorted.bam",
     output:
-        pileup="results/candidate_calls/mpileup/{sample}.{aligner}.pileup.bcf",
+        pileup=temp("results/candidate_calls/mpileup/{sample}.{aligner}.pileup.bcf"),
     params:
         options="--max-depth 100 --min-BQ 15",
     log:
@@ -92,7 +92,7 @@ rule bcftools_call:
     input:
         pileup="results/candidate_calls/mpileup/{sample}.{aligner}.pileup.bcf",
     output:
-        calls="results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf",
+        calls=temp("results/candidate_calls/mpileup/{sample}.{aligner}.calls.bcf"),
     params:
         caller="-m", # valid options include -c/--consensus-caller or -m/--multiallelic-caller
         options="--ploidy GRCh38 --prior 0.001 --variants-only --threads 32 -Ob",
@@ -110,7 +110,7 @@ rule mpileup_bcftools_reheader:
         ## file containing new sample names, can be omitted if "header" is set
         samples="samples.tsv"
     output:
-        "results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf"
+        temp("results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf")
     params:
         extra="",  # optional parameters for bcftools reheader
         view_extra="-O b"  # add output format for internal bcftools view call
@@ -123,7 +123,7 @@ rule index_bcftools_call:
     input:
         "results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf"
     output:
-        "results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf.csi"
+        temp("results/candidate_calls/mpileup/{sample}.{aligner}.calls.reheader.bcf.csi")
     params:
         extra=""  # optional parameters for bcftools index
     wrapper:
@@ -135,7 +135,7 @@ rule deep_variant_calling:
         bam="results/recal/{sample}.{aligner}.sorted.bam",
         ref="resources/genome.fasta"
     output:
-        vcf="results/candidate_calls/deep_variant/{sample}.{aligner}.vcf.gz"
+        vcf=temp("results/candidate_calls/deep_variant/{sample}.{aligner}.vcf.gz")
     params:
         model="wes",   # {wgs, wes, pacbio, hybrid}
         #sample_name=lambda w: w.sample, # optional
@@ -155,7 +155,7 @@ rule deepvariant_bcftools_reheader:
         ## file containing new sample names, can be omitted if "header" is set
         samples="samples.tsv"
     output:
-        "results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf"
+        temp("results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf")
     params:
         extra="",  # optional parameters for bcftools reheader
         view_extra="-O b"  # add output format for internal bcftools view call
@@ -167,7 +167,7 @@ rule index_deep_variant:
     input:
         "results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf"
     output:
-        "results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf.csi"
+        temp("results/candidate_calls/deep_variant/{sample}.{aligner}.reheader.bcf.csi")
     params:
         extra=""  # optional parameters for bcftools index
     wrapper:
@@ -183,7 +183,7 @@ rule freebayes:
         samples="results/recal/{sample}.{aligner}.sorted.bam",
         index="results/recal/{sample}.{aligner}.sorted.bai",
     output:
-        "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf",
+        temp("results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.bcf"),
     log:
         "logs/freebayes/{sample}.{aligner}.log",
     params:
@@ -205,7 +205,7 @@ rule freebayes_bcftools_reheader:
         ## file containing new sample names, can be omitted if "header" is set
         samples="samples.tsv"
     output:
-        "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf"
+        temp("results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf")
     params:
         extra="",  # optional parameters for bcftools reheader
         view_extra="-O b"  # add output format for internal bcftools view call
@@ -217,7 +217,7 @@ rule index_freebayes:
     input:
         "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf"
     output:
-        "results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf.csi"
+        temp("results/candidate_calls/freebayes/{sample}.{aligner}.freebayes.reheader.bcf.csi")
     params:
         extra=""  # optional parameters for bcftools index
     wrapper:
@@ -232,7 +232,7 @@ rule delly:
         index="results/recal/{sample}.{aligner}.sorted.bai",
         #exclude=get_excluded_regions(),
     output:
-        "results/candidate_calls/delly/{sample}.{aligner}.delly.bcf",
+        temp("results/candidate_calls/delly/{sample}.{aligner}.delly.bcf"),
     log:
         "logs/delly/{sample}.{aligner}.log",
     params:
@@ -250,7 +250,7 @@ rule delly_bcftools_reheader:
         ## file containing new sample names, can be omitted if "header" is set
         samples="samples.tsv"
     output:
-        "results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf"
+        temp("results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf")
     params:
         extra="",  # optional parameters for bcftools reheader
         view_extra="-O b"  # add output format for internal bcftools view call
@@ -264,7 +264,7 @@ rule index_delly:
     input:
         "results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf"
     output:
-        "results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf.csi"
+        temp("results/candidate_calls/delly/{sample}.{aligner}.delly.reheader.bcf.csi")
     params:
         extra=""  # optional parameters for bcftools index
     wrapper:
