@@ -20,9 +20,8 @@ species:
 samples:
   NA12878:
     sex: female
-    resolution: 5
     universe: "0.0 | 0.5 | 1.0"
 
 events:
-  het: "0.5"
-  hom: "1.0"
+  het: "NA12878:0.5"
+  hom: "NA12878:1.0"
