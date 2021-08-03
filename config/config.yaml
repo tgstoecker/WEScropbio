@@ -1,6 +1,3 @@
-
-
-
 ref:
   # Number of chromosomes to consider for calling.
   # The first n entries of the FASTA will be considered.
@@ -14,10 +11,6 @@ ref:
 
 
 calling:
-  delly:
-    activate: true
-  freebayes:
-    activate: true
   # See https://varlociraptor.github.io/docs/calling/#generic-variant-calling
   scenario: config/scenario.yaml
 

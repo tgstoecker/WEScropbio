@@ -90,6 +90,8 @@ rule all:
 #        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.bcf",
 #        "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.vcf",
         "results/varlociraptor_filter/norm_final.vcf",
+        "results/varlociraptor_filter/targets_filt_norm_final.vcf"
+
 
 
 
