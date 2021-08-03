@@ -72,7 +72,7 @@ rule norm_final_vcf:
     input:
         "results/varlociraptor_filter/calls.filtered_odds.fdr_controlled_all_vartypes.vcf"
     output:
-        "results/varlociraptor_filter/stoecker_schoof_bonn_NGS-CN_WES_benchmark_NA12878.vcf"
+        "results/varlociraptor_filter/norm_final.vcf"
     params:
 #        "-c w --threads 24"  # optional parameters for bcftools norm (except -o)
         "-m+both -f resources/genome.fasta -c s -d both --threads 24"  # optional parameters for bcftools norm (except -o)
