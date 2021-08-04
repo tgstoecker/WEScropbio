@@ -10,7 +10,7 @@ rule filter_odds:
     conda:
         "../envs/varlociraptor.yaml"
     shell:
-        "varlociraptor filter-calls posterior-odds --events {params.events} --odds barely < {input} > {output} 2> {log}"
+        "varlociraptor filter-calls posterior-odds --events {params.events} --odds very-strong < {input} > {output} 2> {log}"
 
 
 VARTYPES=["SNV", "INS", "DEL", "MNV", "BND", "INV", "DUP", "REP"]
@@ -28,7 +28,7 @@ rule control_fdr:
         "../envs/varlociraptor.yaml"
     shell:
         "varlociraptor filter-calls control-fdr --local {input} --var {wildcards.vartype} "
-        "--events HET HOM --fdr 0.01 > {output} 2> {log}"
+        "--events HET HOM --fdr 0.0001 > {output} 2> {log}"
 
 
 rule bcftools_index_final_calls:
