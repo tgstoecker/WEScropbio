@@ -1,8 +1,8 @@
 # Whole Exome Seq pipeline
 ## Background
 As part of a set of analysis pipeline comparisons organized by the West German Genome Center, this particular workflow is designed to analyze Whole Exome Sequencing samples.  
-Input data was provided in the form of ~80x coverage WES Agilent SureSelect data set of sample NA12878 and a .bed target file.  
-Results from all participants were compared to a gold standard set in Cologne with Illumina's [hap.py](https://github.com/Illumina/hap.py).
+Input data was provided in the form of WES Agilent SureSelect & Twist Bioscience data of sample NA12878 and a .bed target file.  
+Results from all participants were compared to a gold standard set by the Cologne Center for Genomics (CCG) with Illumina's [hap.py](https://github.com/Illumina/hap.py) and with GATK Concordance by the IKMB in Kiel.  
   
 ##  :open_book: About the workflow  
 A stripped down yet extended version of the [dna-seq-varlociraptor](https://github.com/snakemake-workflows/dna-seq-varlociraptor) pipeline by Johannes Köster's team from the university of Duisburg-Essen.  
@@ -12,7 +12,7 @@ Alignment is performed by both bwa-mem and a Novoalign Vv4.02.02 (Licensed for e
 Variants are then joined across all callers with bcftools concat/norm (not perfect since some information is lost in the process).  
 I used [Varlociraptor](https://github.com/varlociraptor/varlociraptor) to produce a final call set and filter it.  
 
-It is important to note that normalization and integration of similar variant calling software is a matter of ongoing research and the quick & dirty solution here is unlikely to be optimal.  
+It is important to note that normalization and integration of similar variant calling software is a matter of ongoing research and the quick & dirty solution used here is unlikely to be optimal.  
 A comparison to highly optimized and established variant calling pipelines based on a single caller is nevertheless very interesting and motivated this entry into the WGGC comparison effort.
 
 ## :beginner: Usage
