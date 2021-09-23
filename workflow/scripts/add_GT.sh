@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
 
-## tis script adds a GT field for a varlociraptor output
+## this script adds a GT field for a varlociraptor output
 
 # left-align
 bcftools norm -m-any targets_filt_norm_final.vcf > la_norm_final.vcf
