@@ -13,7 +13,7 @@ rule filter_odds:
         "varlociraptor filter-calls posterior-odds --events {params.events} --odds very-strong < {input} > {output} 2> {log}"
 
 
-VARTYPES=["SNV", "INS", "DEL", "MNV", "BND", "INV", "DUP", "REP"]
+VARTYPES=["SNV", "INS", "DEL"]
 
 rule control_fdr:
     input:
