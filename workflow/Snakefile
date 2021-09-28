@@ -8,7 +8,7 @@ configfile: "config/config.yaml"
 
 SAMPLES = ["NA12878_HG001_Twist_Bonn"]
 ALIGNERS = ["bwa", "novoalign"]
-VARTYPES=["SNV", "INS", "DEL", "MNV", "BND", "INV", "DUP", "REP"]
+VARTYPES=["SNV", "INS", "DEL"]
 
 include: "rules/ref.smk"
 include: "rules/trimming.smk"
